@@ -12,9 +12,16 @@ struct binary_tree {
 };
 
 template <typename T, typename F>
-binary_tree<T>* bt_iterate(F func, binary_tree<T>* tree) {
+void bt_iterate_new(F func, binary_tree<T>* tree) {
+    for(binary_tree<T>* result = tree;
+        result != NULL; result = bt_iterate_impl(func, result)) {
+    }
+}
+
+template <typename T, typename F>
+binary_tree<T>* bt_iterate_impl(F func, binary_tree<T>* tree) {
     for(binary_tree<T>* result = (tree->left);
-        result != NULL; result = bt_iterate(func, result)) {
+        result != NULL; result = bt_iterate_impl(func, result)) {
     }
     func(tree->value);
     return tree->right;
@@ -62,10 +69,10 @@ int main(int argc, char* argv[]) {
     try_invalid_buf();
     {
         clock_gettime(CLOCK_MONOTONIC, &tpstart);
-        bt_iterate(functor, tree);
-        bt_iterate(functor, tree);
-        bt_iterate(functor, tree);
-        bt_iterate(functor, tree);
+        bt_iterate_new(functor, tree);
+        bt_iterate_new(functor, tree);
+        bt_iterate_new(functor, tree);
+        bt_iterate_new(functor, tree);
         clock_gettime(CLOCK_MONOTONIC, &tpend);
         printf("use_time: %ld \n", (tpend.tv_sec-tpstart.tv_sec)*1000000000+(tpend.tv_nsec-tpstart.tv_nsec));
     }
